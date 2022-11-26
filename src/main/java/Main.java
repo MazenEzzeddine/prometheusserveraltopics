@@ -24,16 +24,14 @@ public class Main {
 
     static Instant lastUpScaleDecision = Instant.now();
     static Instant lastDownScaleDecision = Instant.now();
-    static int size=1;
+    static int size = 1;
     static double dynamicAverageMaxConsumptionRate = 0.0;
     static double wsla = 5.0;
     static List<Consumer> assignment = new ArrayList<>();
 
 
-
-
     public static void main(String[] args) throws InterruptedException {
-        for (int i = 0; i<=4; i++) {
+        for (int i = 0; i <= 4; i++) {
             topicpartitions1.add(new Partition(i, 0, 0));
             topicpartitions2.add(new Partition(i, 0, 0));
         }
@@ -50,12 +48,11 @@ public class Main {
     }
 
 
-
-     static void QueryingPrometheus() {
+    static void QueryingPrometheus() {
 
         HttpClient client = HttpClient.newHttpClient();
         ////////////////////////////////////////////////////
-        List<URI> partitions= new ArrayList<>();
+        List<URI> partitions = new ArrayList<>();
         try {
             partitions = Arrays.asList(
                     new URI(Constants.topic1p0),
@@ -67,7 +64,7 @@ public class Main {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        List<URI> partitionslag= new ArrayList<>();
+        List<URI> partitionslag = new ArrayList<>();
         try {
             partitionslag = Arrays.asList(
                     new URI(Constants.topic1p0lag),
@@ -80,7 +77,7 @@ public class Main {
             e.printStackTrace();
         }
         ///////////////////////////////////////////////////
-         //launch queries for topic 1 lag and arrival get them from prometheus
+        //launch queries for topic 1 lag and arrival get them from prometheus
         List<CompletableFuture<String>> partitionsfutures = partitions.stream()
                 .map(target -> client
                         .sendAsync(
@@ -99,10 +96,9 @@ public class Main {
                 .collect(Collectors.toList());
 
 
-
         int partition = 0;
-        double totalarrivalstopic1=0.0;
-        double  partitionArrivalRate = 0.0;
+        double totalarrivalstopic1 = 0.0;
+        double partitionArrivalRate = 0.0;
         for (CompletableFuture<String> cf : partitionsfutures) {
             try {
                 partitionArrivalRate = Util.parseJsonArrivalRate(cf.get(), partition);
@@ -116,97 +112,89 @@ public class Main {
             partition++;
         }
 
-         log.info("totalArrivalRate for  topic 1 {}", totalarrivalstopic1);
+        log.info("totalArrivalRate for  topic 1 {}", totalarrivalstopic1);
 
 
-
-
-         partition = 0;
-        double totallag=0.0;
-         long  partitionLag = 0L;
+        partition = 0;
+        double totallag = 0.0;
+        long partitionLag = 0L;
         for (CompletableFuture<String> cf : partitionslagfuture) {
             try {
-                partitionLag = Util.parseJsonArrivalLag( cf.get(), partition).longValue();
+                partitionLag = Util.parseJsonArrivalLag(cf.get(), partition).longValue();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
 
-                topicpartitions1.get(partition).setLag(partitionLag);
-                totallag += partitionLag;
+            topicpartitions1.get(partition).setLag(partitionLag);
+            totallag += partitionLag;
             partition++;
 
         }
 
-         log.info("totalLag for topic 1 {}", totallag);
+        log.info("totalLag for topic 1 {}", totallag);
 
 
-
-
-         for (int i = 0; i<=4; i++) {
-            log.info("partition {} for topic 1 has the following arrival rate {} and lag {}",  i, topicpartitions1.get(i).getArrivalRate(),
-                    topicpartitions1.get(i).getLag()) ;
+        for (int i = 0; i <= 4; i++) {
+            log.info("partition {} for topic 1 has the following arrival rate {} and lag {}", i, topicpartitions1.get(i).getArrivalRate(),
+                    topicpartitions1.get(i).getLag());
         }
 
-        if (Duration.between(lastUpScaleDecision, Instant.now()).getSeconds()>15) {
+        if (Duration.between(lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
             scaleAsPerBinPack(size);
         }
 
 
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-
+        ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-    List<URI> partitions2= new ArrayList<>();
+        List<URI> partitions2 = new ArrayList<>();
         try {
-        partitions2 = Arrays.asList(
-                new URI(Constants.topic2p0),
-                new URI(Constants.topic2p1),
-                new URI(Constants.topic2p2),
-                new URI(Constants.topic2p3),
-                new URI(Constants.topic2p4)
-        );
-    } catch (URISyntaxException e) {
-        e.printStackTrace();
-    }
-    List<URI> partitionslag2= new ArrayList<>();
+            partitions2 = Arrays.asList(
+                    new URI(Constants.topic2p0),
+                    new URI(Constants.topic2p1),
+                    new URI(Constants.topic2p2),
+                    new URI(Constants.topic2p3),
+                    new URI(Constants.topic2p4)
+            );
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        List<URI> partitionslag2 = new ArrayList<>();
         try {
-        partitionslag2 = Arrays.asList(
-                new URI(Constants.topic2p0lag),
-                new URI(Constants.topic2p1lag),
-                new URI(Constants.topic2p2lag),
-                new URI(Constants.topic2p3lag),
-                new URI(Constants.topic2p4lag)
-        );
-    } catch (URISyntaxException e) {
-        e.printStackTrace();
-    }
-    ///////////////////////////////////////////////////
+            partitionslag2 = Arrays.asList(
+                    new URI(Constants.topic2p0lag),
+                    new URI(Constants.topic2p1lag),
+                    new URI(Constants.topic2p2lag),
+                    new URI(Constants.topic2p3lag),
+                    new URI(Constants.topic2p4lag)
+            );
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        ///////////////////////////////////////////////////
 
-    List<CompletableFuture<String>> partitionsfutures2 = partitions2.stream()
-            .map(target -> client
-                    .sendAsync(
-                            HttpRequest.newBuilder(target).GET().build(),
-                            HttpResponse.BodyHandlers.ofString())
-                    .thenApply(HttpResponse::body))
-            .collect(Collectors.toList());
-
-
-    List<CompletableFuture<String>> partitionslagfuture2 = partitionslag2.stream()
-            .map(target -> client
-                    .sendAsync(
-                            HttpRequest.newBuilder(target).GET().build(),
-                            HttpResponse.BodyHandlers.ofString())
-                    .thenApply(HttpResponse::body))
-            .collect(Collectors.toList());
+        List<CompletableFuture<String>> partitionsfutures2 = partitions2.stream()
+                .map(target -> client
+                        .sendAsync(
+                                HttpRequest.newBuilder(target).GET().build(),
+                                HttpResponse.BodyHandlers.ofString())
+                        .thenApply(HttpResponse::body))
+                .collect(Collectors.toList());
 
 
+        List<CompletableFuture<String>> partitionslagfuture2 = partitionslag2.stream()
+                .map(target -> client
+                        .sendAsync(
+                                HttpRequest.newBuilder(target).GET().build(),
+                                HttpResponse.BodyHandlers.ofString())
+                        .thenApply(HttpResponse::body))
+                .collect(Collectors.toList());
 
-    int partition2 = 0;
-    double totalarrivalstopic2=0.0;
-    double  partitionArrivalRate2 = 0.0;
-         for (CompletableFuture<String> cf : partitionsfutures2) {
+
+        int partition2 = 0;
+        double totalarrivalstopic2 = 0.0;
+        double partitionArrivalRate2 = 0.0;
+        for (CompletableFuture<String> cf : partitionsfutures2) {
             try {
                 partitionArrivalRate2 = Util.parseJsonArrivalRate(cf.get(), partition2);
             } catch (InterruptedException | ExecutionException e) {
@@ -217,17 +205,17 @@ public class Main {
 
             totalarrivalstopic2 += partitionArrivalRate2;
             partition2++;
-    }
-         log.info("totalArrivalRate for  topic 2 {}", totalarrivalstopic2);
+        }
+        log.info("totalArrivalRate for  topic 2 {}", totalarrivalstopic2);
 
 
-         partition2 = 0;
-    double totallag2=0.0;
-         long  partitionLag2 = 0L;
+        partition2 = 0;
+        double totallag2 = 0.0;
+        long partitionLag2 = 0L;
 
-         for (CompletableFuture<String> cf : partitionslagfuture2) {
+        for (CompletableFuture<String> cf : partitionslagfuture2) {
             try {
-                partitionLag2 = Util.parseJsonArrivalLag( cf.get(), partition2).longValue();
+                partitionLag2 = Util.parseJsonArrivalLag(cf.get(), partition2).longValue();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
@@ -235,22 +223,17 @@ public class Main {
             topicpartitions2.get(partition2).setLag(partitionLag2);
             totallag2 += partitionLag2;
             partition2++;
-    }
+        }
 
 
         log.info("totalLag for topic 2 {}", totallag2);
 
 
-        for (int i = 0; i<=4; i++) {
-        log.info("topic 2 partition {} has the following arrival rate {} and lag {}",  i, topicpartitions2.get(i).getArrivalRate(),
-                topicpartitions2.get(i).getLag()) ;
+        for (int i = 0; i <= 4; i++) {
+            log.info("topic 2 partition {} has the following arrival rate {} and lag {}", i, topicpartitions2.get(i).getArrivalRate(),
+                    topicpartitions2.get(i).getLag());
+        }
     }
-}
-
-
-
-
-
 
 
     private static int binPackAndScale() {
@@ -279,7 +262,7 @@ public class Main {
             if (partition.getArrivalRate() > dynamicAverageMaxConsumptionRate) {
                 log.info("Since partition {} has arrival rate {} higher than consumer service rate {}" +
                                 " we are truncating its arrival rate", partition.getId(),
-                        String.format("%.2f",  partition.getArrivalRate()),
+                        String.format("%.2f", partition.getArrivalRate()),
                         String.format("%.2f", dynamicAverageMaxConsumptionRate));
                 partition.setArrivalRate(dynamicAverageMaxConsumptionRate);
             }
@@ -292,7 +275,7 @@ public class Main {
                 //TODO externalize these choices on the inout to the FFD bin pack
                 // TODO  hey stupid use instatenous lag instead of average lag.
                 // TODO average lag is a decision on past values especially for long DI.
-                if (cons.getRemainingLagCapacity() >=  partition.getLag()  &&
+                if (cons.getRemainingLagCapacity() >= partition.getLag() &&
                         cons.getRemainingArrivalCapacity() >= partition.getArrivalRate()) {
                     cons.assignPartition(partition);
                     // we are done with this partition, go to next
@@ -315,7 +298,7 @@ public class Main {
         log.info(" The BP scaler recommended {}", consumers.size());
         // copy consumers and partitions for fair assignment
         List<Consumer> fairconsumers = new ArrayList<>(consumers.size());
-        List<Partition> fairpartitions= new ArrayList<>();
+        List<Partition> fairpartitions = new ArrayList<>();
 
         for (Consumer cons : consumers) {
             fairconsumers.add(new Consumer(cons.getId(), maxLagCapacity, dynamicAverageMaxConsumptionRate));
@@ -333,10 +316,10 @@ public class Main {
         //1. list of consumers that will contain the fair assignment
         //2. list of consumers out of the bin pack.
         //3. the partition sorted in their decreasing arrival rate.
-        assignPartitionsFairly(fairconsumers,consumers,fairpartitions);
+        assignPartitionsFairly(fairconsumers, consumers, fairpartitions);
         for (Consumer cons : fairconsumers) {
-            log.info("fair consumer {} is assigned the following partitions", cons.getId() );
-            for(Partition p : cons.getAssignedPartitions()) {
+            log.info("fair consumer {} is assigned the following partitions", cons.getId());
+            for (Partition p : cons.getAssignedPartitions()) {
                 log.info("fair Partition {}", p.getId());
             }
         }
@@ -377,12 +360,12 @@ public class Main {
             // returns the consumer with lowest assigned partitions, if all assigned partitions equal returns the min total arrival rate
             final String memberId = Collections
                     .min(consumerTotalArrivalRate.entrySet(), (c1, c2) ->
-                            Double.compare(c1.getValue(), c2.getValue())!=0?
-                                    Double.compare(c1.getValue(), c2.getValue()): c1.getKey().compareTo(c2.getKey())).getKey();
+                            Double.compare(c1.getValue(), c2.getValue()) != 0 ?
+                                    Double.compare(c1.getValue(), c2.getValue()) : c1.getKey().compareTo(c2.getKey())).getKey();
 
             int memberIndex;
-            for( memberIndex = 0; memberIndex<consumers.size(); memberIndex++) {
-                if(assignment.get(memberIndex).getId().equals(memberId)){
+            for (memberIndex = 0; memberIndex < consumers.size(); memberIndex++) {
+                if (assignment.get(memberIndex).getId().equals(memberId)) {
                     break;
                 }
             }
@@ -393,12 +376,11 @@ public class Main {
             log.info(
                     "Assigned partition {} to consumer {}.  partition_arrival_rate={}, consumer_current_total_arrival_rate{} ",
                     partition.getId(),
-                    memberId ,
-                    String.format("%.2f", partition.getArrivalRate()) ,
+                    memberId,
+                    String.format("%.2f", partition.getArrivalRate()),
                     consumerTotalArrivalRate.get(memberId));
         }
     }
-
 
 
     public static void scaleAsPerBinPack(int currentsize) {
@@ -418,7 +400,7 @@ public class Main {
                 //TODO skipping it for now. (enforce rebalance)
             }*/
         } else if (replicasForscale > 0) {
-            if(Duration.between(lastUpScaleDecision, Instant.now()).toSeconds()<15) return;
+            if (Duration.between(lastUpScaleDecision, Instant.now()).toSeconds() < 15) return;
 
             //TODO IF and Else IF can be in the same logic
             log.info("We have to upscale by {}", replicasForscale);
@@ -428,7 +410,7 @@ public class Main {
                 lastUpScaleDecision = Instant.now();
             }
         } else {
-            if(Duration.between(lastDownScaleDecision, Instant.now()).toSeconds()<30) return;
+            if (Duration.between(lastDownScaleDecision, Instant.now()).toSeconds() < 30) return;
             try (final KubernetesClient k8s = new DefaultKubernetesClient()) {
                 k8s.apps().deployments().inNamespace("default").withName("cons1persec").scale(neededsize);
                 log.info("I have Downscaled you should have {}", neededsize);
@@ -436,11 +418,6 @@ public class Main {
             }
         }
     }
-
-
-
-
-
 
 
 }
