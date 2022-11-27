@@ -27,6 +27,8 @@ public class Main {
         for (int i = 0; i <= 4; i++) {
             Scale.topicpartitions1.add(new Partition(i, 0, 0));
             Scale.topicpartitions2.add(new Partition(i, 0, 0));
+            Scale2.topicpartitions1.add(new Partition(i, 0, 0));
+            Scale2.topicpartitions2.add(new Partition(i, 0, 0));
         }
 
         log.info("Warming for 30 seconds.");
@@ -132,9 +134,6 @@ public class Main {
                     Scale.topicpartitions1.get(i).getLag());
         }
 
-        if (Duration.between(Scale.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
-            Scale.scaleAsPerBinPack(Scale.size);
-        }
 
 
 
@@ -196,7 +195,7 @@ public class Main {
                 e.printStackTrace();
             }
 
-            Scale.topicpartitions2.get(partition2).setArrivalRate(partitionArrivalRate2);
+            Scale2.topicpartitions2.get(partition2).setArrivalRate(partitionArrivalRate2);
 
             totalarrivalstopic2 += partitionArrivalRate2;
             partition2++;
@@ -215,7 +214,7 @@ public class Main {
                 e.printStackTrace();
             }
 
-            Scale.topicpartitions2.get(partition2).setLag(partitionLag2);
+            Scale2.topicpartitions2.get(partition2).setLag(partitionLag2);
             totallag2 += partitionLag2;
             partition2++;
         }
@@ -225,10 +224,26 @@ public class Main {
 
 
         for (int i = 0; i <= 4; i++) {
-            log.info("topic 2 partition {} has the following arrival rate {} and lag {}", i, Scale.topicpartitions2.get(i).getArrivalRate(),
-                    Scale.topicpartitions2.get(i).getLag());
+            log.info("topic 2 partition {} has the following arrival rate {} and lag {}", i, Scale2.topicpartitions2.get(i).getArrivalRate(),
+                    Scale2.topicpartitions2.get(i).getLag());
         }
+
+
+
+
+        if (Duration.between(Scale.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
+            Scale.scaleAsPerBinPack(Scale.size);
+        }
+
+        if (Duration.between(Scale2.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
+            Scale2.scaleAsPerBinPack(Scale2.size);
+        }
+
     }
+
+
+
+
 
 
 
