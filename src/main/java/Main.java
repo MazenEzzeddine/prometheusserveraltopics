@@ -241,7 +241,7 @@ public class Main {
         List<Consumer> consumers = new ArrayList<>();
         int consumerCount = 0;
         List<Partition> parts = new ArrayList<>(topicpartitions1);
-        dynamicAverageMaxConsumptionRate = 90.0;
+        dynamicAverageMaxConsumptionRate = 95*0.8; //90.0;
 
         long maxLagCapacity;
         maxLagCapacity = (long) (dynamicAverageMaxConsumptionRate * wsla);
@@ -340,7 +340,7 @@ public class Main {
         final Map<String, Double> consumerAllowableArrivalRate = new HashMap<>(consumers.size());
         for (Consumer cons : consumers) {
             consumerTotalArrivalRate.put(cons.getId(), 0.0);
-            consumerAllowableArrivalRate.put(cons.getId(), 90.0);
+            consumerAllowableArrivalRate.put(cons.getId(), 95.0*0.8);
             consumerTotalPartitions.put(cons.getId(), 0);
 
         }
@@ -386,6 +386,7 @@ public class Main {
     public static void scaleAsPerBinPack(int currentsize) {
         log.info("Currently we have this number of consumers {}", currentsize);
         int neededsize = binPackAndScale();
+        size= neededsize;
         log.info("We currently need the following consumers (as per the bin pack) {}", neededsize);
 
         int replicasForscale = neededsize - currentsize;
