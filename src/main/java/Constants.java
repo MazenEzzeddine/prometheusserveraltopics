@@ -68,6 +68,75 @@ public class Constants {
             "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup2%22,topic=%22testtopic2%22,partition=%223%22,namespace=%22default%22%7D";
     static String topic2p4lag = "http://prometheus-operated:9090/api/v1/query?query=" +
             "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup2%22,topic=%22testtopic2%22,partition=%224%22,namespace=%22default%22%7D";
+
+
+    ////////////////////////topic4
+
+
+    static String topic4ar = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic4%22,namespace=%22default%22%7D%5B1m%5D))%20by%20(topic)";
+    static String topic4p0 = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic4%22,partition=%220%22,namespace=%22default%22%7D%5B20s%5D))";
+    static String topic4p1 = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic4%22,partition=%221%22,namespace=%22default%22%7D%5B20s%5D))";
+    static String topic4p2 = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic4%22,partition=%222%22,namespace=%22default%22%7D%5B20s%5D))";
+    static String topic4p3 = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic4%22,partition=%223%22,namespace=%22default%22%7D%5B20s%5D))";
+    static String topic4p4 = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic4%22,partition=%224%22,namespace=%22default%22%7D%5B20s%5D))";
+
+
+    //  "sum(kafka_consumergroup_lag%7Bconsumergroup=%22testgroup1%22,topic=%22testtopic1%22, namespace=%22kubernetes_namespace%7D)%20by%20(consumergroup,topic)"
+    //sum(kafka_consumergroup_lag{consumergroup=~"$consumergroup",topic=~"$topic", namespace=~"$kubernetes_namespace"}) by (consumergroup, topic)
+
+    static String topic4lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "sum(kafka_consumergroup_lag%7Bconsumergroup=%22testgroup4%22,topic=%22testtopic4%22,namespace=%22default%22%7D)%20by%20(consumergroup,topic)";
+    static String topic4p0lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup4%22,topic=%22testtopic4%22,partition=%220%22,namespace=%22default%22%7D";
+    static String topic4p1lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup4%22,topic=%22testtopic4%22,partition=%221%22,namespace=%22default%22%7D";
+    static String topic4p2lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup4%22,topic=%22testtopic4%22,partition=%222%22,namespace=%22default%22%7D";
+    static String topic4p3lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup4%22,topic=%22testtopic4%22,partition=%223%22,namespace=%22default%22%7D";
+    static String topic4p4lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup4%22,topic=%22testtopic4%22,partition=%224%22,namespace=%22default%22%7D";
+
+
+
+    //////////////////////////////////////////////////////
+
+
+    static String topic3ar = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic3%22,namespace=%22default%22%7D%5B1m%5D))%20by%20(topic)";
+    static String topic3p0 = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic3%22,partition=%220%22,namespace=%22default%22%7D%5B20s%5D))";
+    static String topic3p1 = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic3%22,partition=%221%22,namespace=%22default%22%7D%5B20s%5D))";
+    static String topic3p2 = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic3%22,partition=%222%22,namespace=%22default%22%7D%5B20s%5D))";
+    static String topic3p3 = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic3%22,partition=%223%22,namespace=%22default%22%7D%5B20s%5D))";
+    static String topic3p4 = "http://prometheus-operated:9090/api/v1/query?" +
+            "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic3%22,partition=%224%22,namespace=%22default%22%7D%5B20s%5D))";
+
+
+    //  "sum(kafka_consumergroup_lag%7Bconsumergroup=%22testgroup1%22,topic=%22testtopic1%22, namespace=%22kubernetes_namespace%7D)%20by%20(consumergroup,topic)"
+    //sum(kafka_consumergroup_lag{consumergroup=~"$consumergroup",topic=~"$topic", namespace=~"$kubernetes_namespace"}) by (consumergroup, topic)
+
+    static String topic3lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "sum(kafka_consumergroup_lag%7Bconsumergroup=%22testgroup3%22,topic=%22testtopic3%22,namespace=%22default%22%7D)%20by%20(consumergroup,topic)";
+    static String topic3p0lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup3%22,topic=%22testtopic3%22,partition=%220%22,namespace=%22default%22%7D";
+    static String topic3p1lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup3%22,topic=%22testtopic3%22,partition=%221%22,namespace=%22default%22%7D";
+    static String topic3p2lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup3%22,topic=%22testtopic3%22,partition=%222%22,namespace=%22default%22%7D";
+    static String topic3p3lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup3%22,topic=%22testtopic3%22,partition=%223%22,namespace=%22default%22%7D";
+    static String topic3p4lag = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup3%22,topic=%22testtopic3%22,partition=%224%22,namespace=%22default%22%7D";
 }
 
 
