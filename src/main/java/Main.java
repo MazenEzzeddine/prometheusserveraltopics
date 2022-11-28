@@ -231,13 +231,15 @@ public class Main {
 
 
 
-        if (Duration.between(Scale.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
+ /*       if (Duration.between(Scale.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
             Scale.scaleAsPerBinPack(Scale.size);
-        }
+        }*/
 
         if (Duration.between(Scale2.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
             Scale2.scaleAsPerBinPack(Scale2.size);
         }
+
+
 
     }
 

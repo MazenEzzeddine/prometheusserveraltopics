@@ -21,7 +21,7 @@ public class Scale2 {
     static List<Consumer> assignment = new ArrayList<>();
 
 
-    private static final Logger log = LogManager.getLogger(Scale.class);
+    private static final Logger log = LogManager.getLogger(Scale2.class);
 
 
     private static int binPackAndScale() {
