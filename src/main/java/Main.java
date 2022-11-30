@@ -35,6 +35,7 @@ public class Main {
             Scale2.topicpartitions2.add(new Partition(i, 0, 0));
             topicpartitions4.add(new Partition(i, 0, 0));
             topicpartitions3.add(new Partition(i, 0, 0));
+            Scale5.topicpartitions5.add(new Partition(i, 0, 0));
 
         }
 
@@ -241,20 +242,28 @@ public class Main {
         log.info("******************");
 
 
-
-
-
- /*       if (Duration.between(Scale.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
-            Scale.scaleAsPerBinPack(Scale.size);
-        }*/
-
-   /*     if (Duration.between(Scale2.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
-            Scale2.scaleAsPerBinPack(Scale2.size);
-        }*/
-
-
-        arrivalRateTopic4();
         arrivalRateTopic3();
+        arrivalRateTopic4();
+        arrivalRateTopic5();
+
+
+
+
+
+        if (Duration.between(Scale.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
+            Scale.scaleAsPerBinPack(Scale.size);
+        }
+
+        if (Duration.between(Scale2.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
+            Scale2.scaleAsPerBinPack(Scale2.size);
+        }
+
+        if (Duration.between(Scale5.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
+            Scale5.scaleAsPerBinPack(Scale5.size);
+        }
+
+
+
 
 
 
@@ -453,6 +462,106 @@ public class Main {
             log.info("topic 3 partition {} has the following arrival rate {} and lag {}", i, topicpartitions3.get(i).getArrivalRate(),
                     topicpartitions3.get(i).getLag());
         }
+        log.info("******************");
+
+
+
+    }
+
+
+    static void arrivalRateTopic5() {
+
+
+        HttpClient client = HttpClient.newHttpClient();
+
+        List<URI> partitions2 = new ArrayList<>();
+        try {
+            partitions2 = Arrays.asList(
+                    new URI(Constants.topic5p0),
+                    new URI(Constants.topic5p1),
+                    new URI(Constants.topic5p2),
+                    new URI(Constants.topic5p3),
+                    new URI(Constants.topic5p4)
+            );
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        List<URI> partitionslag2 = new ArrayList<>();
+        try {
+            partitionslag2 = Arrays.asList(
+                    new URI(Constants.topic5p0lag),
+                    new URI(Constants.topic5p1lag),
+                    new URI(Constants.topic5p2lag),
+                    new URI(Constants.topic5p3lag),
+                    new URI(Constants.topic5p4lag)
+            );
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        ///////////////////////////////////////////////////
+
+        List<CompletableFuture<String>> partitionsfutures2 = partitions2.stream()
+                .map(target -> client
+                        .sendAsync(
+                                HttpRequest.newBuilder(target).GET().build(),
+                                HttpResponse.BodyHandlers.ofString())
+                        .thenApply(HttpResponse::body))
+                .collect(Collectors.toList());
+
+
+        List<CompletableFuture<String>> partitionslagfuture2 = partitionslag2.stream()
+                .map(target -> client
+                        .sendAsync(
+                                HttpRequest.newBuilder(target).GET().build(),
+                                HttpResponse.BodyHandlers.ofString())
+                        .thenApply(HttpResponse::body))
+                .collect(Collectors.toList());
+
+
+        int partition2 = 0;
+        double totalarrivalstopic2 = 0.0;
+        double partitionArrivalRate2 = 0.0;
+        for (CompletableFuture<String> cf : partitionsfutures2) {
+            try {
+                partitionArrivalRate2 = Util.parseJsonArrivalRate(cf.get(), partition2);
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            Scale5.topicpartitions5.get(partition2).setArrivalRate(partitionArrivalRate2);
+
+            totalarrivalstopic2 += partitionArrivalRate2;
+            partition2++;
+        }
+        log.info("totalArrivalRate for  topic 5 {}", totalarrivalstopic2);
+
+
+        partition2 = 0;
+        double totallag2 = 0.0;
+        long partitionLag2 = 0L;
+
+        for (CompletableFuture<String> cf : partitionslagfuture2) {
+            try {
+                partitionLag2 = Util.parseJsonArrivalLag(cf.get(), partition2).longValue();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            Scale5.topicpartitions5.get(partition2).setLag(partitionLag2);
+            totallag2 += partitionLag2;
+            partition2++;
+        }
+
+
+        log.info("totalLag for topic 5 {}", totallag2);
+
+
+        for (int i = 0; i <= 4; i++) {
+            log.info("topic 5 partition {} has the following arrival rate {} and lag {}", i, Scale5.topicpartitions5.get(i).getArrivalRate(),
+                    Scale5.topicpartitions5.get(i).getLag());
+        }
+
+
         log.info("******************");
 
 

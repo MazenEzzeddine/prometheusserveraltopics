@@ -29,7 +29,7 @@ public class Scale2 {
         List<Consumer> consumers = new ArrayList<>();
         int consumerCount = 0;
         List<Partition> parts = new ArrayList<>(topicpartitions2);
-        dynamicAverageMaxConsumptionRate = 95*0.8; //90.0;
+        dynamicAverageMaxConsumptionRate = 180.0;//95*0.8; //90.0;
 
         long maxLagCapacity;
         maxLagCapacity = (long) (dynamicAverageMaxConsumptionRate * wsla);
@@ -128,7 +128,7 @@ public class Scale2 {
         final Map<String, Double> consumerAllowableArrivalRate = new HashMap<>(consumers.size());
         for (Consumer cons : consumers) {
             consumerTotalArrivalRate.put(cons.getId(), 0.0);
-            consumerAllowableArrivalRate.put(cons.getId(), 95.0*0.8);
+            consumerAllowableArrivalRate.put(cons.getId(), 180.0);
             consumerTotalPartitions.put(cons.getId(), 0);
 
         }

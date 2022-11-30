@@ -7,11 +7,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-public class Scale {
+public class Scale5 {
 
 
     static ArrayList<Partition> topicpartitions1 = new ArrayList<>();
     static ArrayList<Partition> topicpartitions2 = new ArrayList<>();
+    static ArrayList<Partition> topicpartitions5 = new ArrayList<>();
+
 
     static Instant lastUpScaleDecision = Instant.now();
     static Instant lastDownScaleDecision = Instant.now();
@@ -21,14 +23,14 @@ public class Scale {
     static List<Consumer> assignment = new ArrayList<>();
 
 
-    private static final Logger log = LogManager.getLogger(Scale.class);
+    private static final Logger log = LogManager.getLogger(Scale5.class);
 
 
     private static int binPackAndScale() {
         log.info("Inside binPackAndScale ");
         List<Consumer> consumers = new ArrayList<>();
         int consumerCount = 0;
-        List<Partition> parts = new ArrayList<>(topicpartitions1);
+        List<Partition> parts = new ArrayList<>(topicpartitions5);
         dynamicAverageMaxConsumptionRate = 180.0;//95*0.8; //90.0;
 
         long maxLagCapacity;
@@ -83,7 +85,7 @@ public class Scale {
                 consumer = null;
             }
         }
-        log.info(" The BP scaler recommended {}", consumers.size());
+        log.info(" The BP scaler recommended for cg 2 {}", consumers.size());
         // copy consumers and partitions for fair assignment
         List<Consumer> fairconsumers = new ArrayList<>(consumers.size());
         List<Partition> fairpartitions = new ArrayList<>();
@@ -128,7 +130,7 @@ public class Scale {
         final Map<String, Double> consumerAllowableArrivalRate = new HashMap<>(consumers.size());
         for (Consumer cons : consumers) {
             consumerTotalArrivalRate.put(cons.getId(), 0.0);
-            consumerAllowableArrivalRate.put(cons.getId(),180.0 /*95.0*0.8*/);
+            consumerAllowableArrivalRate.put(cons.getId(), 180.0);
             consumerTotalPartitions.put(cons.getId(), 0);
 
         }
@@ -172,7 +174,7 @@ public class Scale {
 
 
     public static void scaleAsPerBinPack(int currentsize) {
-        log.info("Currently we have this number of consumers {}", currentsize);
+        log.info("Currently we have this number of consumers for cg 5 {}", currentsize);
         int neededsize = binPackAndScale();
         size= neededsize;
         log.info("We currently need the following consumers (as per the bin pack) {}", neededsize);
@@ -194,14 +196,14 @@ public class Scale {
             //TODO IF and Else IF can be in the same logic
             log.info("We have to upscale by {}", replicasForscale);
             try (final KubernetesClient k8s = new DefaultKubernetesClient()) {
-                k8s.apps().deployments().inNamespace("default").withName("cons1persec").scale(neededsize);
+                k8s.apps().deployments().inNamespace("default").withName("cons1persec5").scale(neededsize);
                 log.info("I have Upscaled you should have {}", neededsize);
                 lastUpScaleDecision = Instant.now();
             }
         } else {
             if (Duration.between(lastDownScaleDecision, Instant.now()).toSeconds() < 30) return;
             try (final KubernetesClient k8s = new DefaultKubernetesClient()) {
-                k8s.apps().deployments().inNamespace("default").withName("cons1persec").scale(neededsize);
+                k8s.apps().deployments().inNamespace("default").withName("cons1persec5").scale(neededsize);
                 log.info("I have Downscaled you should have {}", neededsize);
                 lastDownScaleDecision = Instant.now();
             }
