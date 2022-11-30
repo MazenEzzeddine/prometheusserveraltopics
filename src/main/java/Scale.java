@@ -11,7 +11,6 @@ public class Scale {
 
 
     static ArrayList<Partition> topicpartitions1 = new ArrayList<>();
-    static ArrayList<Partition> topicpartitions2 = new ArrayList<>();
 
     static Instant lastUpScaleDecision = Instant.now();
     static Instant lastDownScaleDecision = Instant.now();
@@ -29,7 +28,7 @@ public class Scale {
         List<Consumer> consumers = new ArrayList<>();
         int consumerCount = 0;
         List<Partition> parts = new ArrayList<>(topicpartitions1);
-        dynamicAverageMaxConsumptionRate = 180.0;//95*0.8; //90.0;
+        dynamicAverageMaxConsumptionRate = 230*0.75; //225.0;//180.0;//95*0.8; //90.0;
 
         long maxLagCapacity;
         maxLagCapacity = (long) (dynamicAverageMaxConsumptionRate * wsla);
@@ -128,7 +127,7 @@ public class Scale {
         final Map<String, Double> consumerAllowableArrivalRate = new HashMap<>(consumers.size());
         for (Consumer cons : consumers) {
             consumerTotalArrivalRate.put(cons.getId(), 0.0);
-            consumerAllowableArrivalRate.put(cons.getId(),180.0 /*95.0*0.8*/);
+            consumerAllowableArrivalRate.put(cons.getId(),225.0 /*180.0 /*95.0*0.8*/);
             consumerTotalPartitions.put(cons.getId(), 0);
 
         }

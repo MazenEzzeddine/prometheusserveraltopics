@@ -30,8 +30,6 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         for (int i = 0; i <= 4; i++) {
             Scale.topicpartitions1.add(new Partition(i, 0, 0));
-            Scale.topicpartitions2.add(new Partition(i, 0, 0));
-            Scale2.topicpartitions1.add(new Partition(i, 0, 0));
             Scale2.topicpartitions2.add(new Partition(i, 0, 0));
             topicpartitions4.add(new Partition(i, 0, 0));
             topicpartitions3.add(new Partition(i, 0, 0));

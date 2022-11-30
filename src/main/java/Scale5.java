@@ -10,8 +10,7 @@ import java.util.*;
 public class Scale5 {
 
 
-    static ArrayList<Partition> topicpartitions1 = new ArrayList<>();
-    static ArrayList<Partition> topicpartitions2 = new ArrayList<>();
+
     static ArrayList<Partition> topicpartitions5 = new ArrayList<>();
 
 
@@ -31,7 +30,7 @@ public class Scale5 {
         List<Consumer> consumers = new ArrayList<>();
         int consumerCount = 0;
         List<Partition> parts = new ArrayList<>(topicpartitions5);
-        dynamicAverageMaxConsumptionRate = 180.0;//95*0.8; //90.0;
+        dynamicAverageMaxConsumptionRate = 230.0 *0.75;//180.0;//95*0.8; //90.0;
 
         long maxLagCapacity;
         maxLagCapacity = (long) (dynamicAverageMaxConsumptionRate * wsla);
@@ -130,7 +129,7 @@ public class Scale5 {
         final Map<String, Double> consumerAllowableArrivalRate = new HashMap<>(consumers.size());
         for (Consumer cons : consumers) {
             consumerTotalArrivalRate.put(cons.getId(), 0.0);
-            consumerAllowableArrivalRate.put(cons.getId(), 180.0);
+            consumerAllowableArrivalRate.put(cons.getId(), 225.0/*180.0*/);
             consumerTotalPartitions.put(cons.getId(), 0);
 
         }
