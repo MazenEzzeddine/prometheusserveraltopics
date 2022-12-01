@@ -28,7 +28,7 @@ public class Scale2 {
         List<Consumer> consumers = new ArrayList<>();
         int consumerCount = 0;
         List<Partition> parts = new ArrayList<>(topicpartitions2);
-        dynamicAverageMaxConsumptionRate = 230*0.75;//225.0;//180.0;//95*0.8; //90.0;
+        dynamicAverageMaxConsumptionRate = 230*0.7;//0.75;//225.0;//180.0;//95*0.8; //90.0;
 
         long maxLagCapacity;
         maxLagCapacity = (long) (dynamicAverageMaxConsumptionRate * wsla);
@@ -104,12 +104,12 @@ public class Scale2 {
         //2. list of consumers out of the bin pack.
         //3. the partition sorted in their decreasing arrival rate.
         assignPartitionsFairly(fairconsumers, consumers, fairpartitions);
-        for (Consumer cons : fairconsumers) {
+        /*for (Consumer cons : fairconsumers) {
             log.info("fair consumer {} is assigned the following partitions", cons.getId());
             for (Partition p : cons.getAssignedPartitions()) {
                 log.info("fair Partition {}", p.getId());
             }
-        }
+        }*/
         assignment = fairconsumers;
         return consumers.size();
     }
@@ -160,12 +160,12 @@ public class Scale2 {
             assignment.get(memberIndex).assignPartition(partition);
             consumerTotalArrivalRate.put(memberId, consumerTotalArrivalRate.getOrDefault(memberId, 0.0) + partition.getArrivalRate());
             consumerTotalPartitions.put(memberId, consumerTotalPartitions.getOrDefault(memberId, 0) + 1);
-            log.info(
+          /*  log.info(
                     "Assigned partition {} to consumer {}.  partition_arrival_rate={}, consumer_current_total_arrival_rate{} ",
                     partition.getId(),
                     memberId,
                     String.format("%.2f", partition.getArrivalRate()),
-                    consumerTotalArrivalRate.get(memberId));
+                    consumerTotalArrivalRate.get(memberId));*/
         }
     }
 
@@ -174,7 +174,7 @@ public class Scale2 {
         log.info("Currently we have this number of consumers for cg 2 {}", currentsize);
         int neededsize = binPackAndScale();
         size= neededsize;
-        log.info("We currently need the following consumers (as per the bin pack) {}", neededsize);
+        log.info("We currently need the following consumers (as per the bin pack) for cg 2 {}", neededsize);
 
         int replicasForscale = neededsize - currentsize;
         // but is the assignmenet the same
@@ -188,10 +188,10 @@ public class Scale2 {
                 //TODO skipping it for now. (enforce rebalance)
             }*/
         } else if (replicasForscale > 0) {
-            if (Duration.between(lastUpScaleDecision, Instant.now()).toSeconds() < 15) return;
+            //if (Duration.between(lastUpScaleDecision, Instant.now()).toSeconds() < 15) return;
 
             //TODO IF and Else IF can be in the same logic
-            log.info("We have to upscale by {}", replicasForscale);
+            log.info("We have to upscale cg2 by {}", replicasForscale);
             try (final KubernetesClient k8s = new DefaultKubernetesClient()) {
                 k8s.apps().deployments().inNamespace("default").withName("cons1persec2").scale(neededsize);
                 log.info("I have Upscaled you should have {}", neededsize);
@@ -201,7 +201,7 @@ public class Scale2 {
             if (Duration.between(lastDownScaleDecision, Instant.now()).toSeconds() < 30) return;
             try (final KubernetesClient k8s = new DefaultKubernetesClient()) {
                 k8s.apps().deployments().inNamespace("default").withName("cons1persec2").scale(neededsize);
-                log.info("I have Downscaled you should have {}", neededsize);
+                log.info("I have Downscaled cg2 you should have {}", neededsize);
                 lastDownScaleDecision = Instant.now();
             }
         }

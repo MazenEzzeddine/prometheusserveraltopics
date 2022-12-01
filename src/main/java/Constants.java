@@ -158,6 +158,8 @@ public class Constants {
             "query=sum(rate(kafka_topic_partition_current_offset%7Btopic=%22testtopic5%22,partition=%224%22,namespace=%22default%22%7D%5B20s%5D))";
 
 
+
+
     //  "sum(kafka_consumergroup_lag%7Bconsumergroup=%22testgroup1%22,topic=%22testtopic1%22, namespace=%22kubernetes_namespace%7D)%20by%20(consumergroup,topic)"
     //sum(kafka_consumergroup_lag{consumergroup=~"$consumergroup",topic=~"$topic", namespace=~"$kubernetes_namespace"}) by (consumergroup, topic)
 
@@ -173,6 +175,27 @@ public class Constants {
             "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup5%22,topic=%22testtopic5%22,partition=%223%22,namespace=%22default%22%7D";
     static String topic5p4lag = "http://prometheus-operated:9090/api/v1/query?query=" +
             "kafka_consumergroup_lag%7Bconsumergroup=%22testgroup5%22,topic=%22testtopic5%22,partition=%224%22,namespace=%22default%22%7D";
+
+
+
+
+    //// avg over time lag for topic 5
+
+
+    static String topic5p0lagavg = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "avg_over_time(kafka_consumergroup_lag%7Bconsumergroup=~%22testgroup5%22,partition=%220%22,topic=%22testtopic5%22,namespace=%22default%22%7D%5B1m%5D)";
+    static String topic5p1lagavg = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "avg_over_time(kafka_consumergroup_lag%7Bconsumergroup=~%22testgroup5%22,partition=%221%22,topic=%22testtopic5%22,namespace=%22default%22%7D%5B1m%5D)";
+    static String topic5p2lagavg = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "avg_over_time(kafka_consumergroup_lag%7Bconsumergroup=~%22testgroup5%22,partition=%222%22,topic=%22testtopic5%22,namespace=%22default%22%7D%5B1m%5D)";
+    static String topic5p3lagavg = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "avg_over_time(kafka_consumergroup_lag%7Bconsumergroup=~%22testgroup5%22,partition=%223%22,topic=%22testtopic5%22,namespace=%22default%22%7D%5B1m%5D)";
+    static String topic5p4lagavg = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "avg_over_time(kafka_consumergroup_lag%7Bconsumergroup=~%22testgroup5%22,partition=%223%22,topic=%22testtopic5%22,namespace=%22default%22%7D%5B1m%5D)";
+
+    static String topic5lagavg = "http://prometheus-operated:9090/api/v1/query?query=" +
+            "sum(avg_over_time(kafka_consumergroup_lag%7Bconsumergroup=~%22testgroup5%22,topic=%22testtopic5%22,namespace=%22default%22%7D%5B1m%5D))%20by%20(topic)";
+
 }
 
 

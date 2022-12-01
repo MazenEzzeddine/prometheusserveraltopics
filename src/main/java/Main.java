@@ -34,6 +34,12 @@ public class Main {
             topicpartitions4.add(new Partition(i, 0, 0));
             topicpartitions3.add(new Partition(i, 0, 0));
             Scale5.topicpartitions5.add(new Partition(i, 0, 0));
+            Scale5.topicpartitions5lag.add(new Partition(i, 0, 0));
+            Scalep.topicpartitions1.add(new Partition(i, 0, 0));
+            Scale2p.topicpartitions2.add(new Partition(i, 0, 0));
+            Scale5p.topicpartitions5.add(new Partition(i, 0, 0));
+
+
 
         }
 
@@ -107,7 +113,7 @@ public class Main {
                 e.printStackTrace();
             }
 
-            Scale.topicpartitions1.get(partition).setArrivalRate(partitionArrivalRate);
+            Scalep.topicpartitions1.get(partition).setArrivalRate(partitionArrivalRate);
 
             totalarrivalstopic1 += partitionArrivalRate;
             partition++;
@@ -126,7 +132,7 @@ public class Main {
                 e.printStackTrace();
             }
 
-            Scale.topicpartitions1.get(partition).setLag(partitionLag);
+            Scalep.topicpartitions1.get(partition).setLag(partitionLag);
             totallag += partitionLag;
             partition++;
 
@@ -136,8 +142,8 @@ public class Main {
 
 
         for (int i = 0; i <= 4; i++) {
-            log.info("partition {} for topic 1 has the following arrival rate {} and lag {}", i, Scale.topicpartitions1.get(i).getArrivalRate(),
-                    Scale.topicpartitions1.get(i).getLag());
+            log.info("partition {} for topic 1 has the following arrival rate {} and lag {}", i, Scalep.topicpartitions1.get(i).getArrivalRate(),
+                    Scalep.topicpartitions1.get(i).getLag());
         }
 
 
@@ -205,7 +211,7 @@ public class Main {
                 e.printStackTrace();
             }
 
-            Scale2.topicpartitions2.get(partition2).setArrivalRate(partitionArrivalRate2);
+            Scale2p.topicpartitions2.get(partition2).setArrivalRate(partitionArrivalRate2);
 
             totalarrivalstopic2 += partitionArrivalRate2;
             partition2++;
@@ -224,7 +230,7 @@ public class Main {
                 e.printStackTrace();
             }
 
-            Scale2.topicpartitions2.get(partition2).setLag(partitionLag2);
+            Scale2p.topicpartitions2.get(partition2).setLag(partitionLag2);
             totallag2 += partitionLag2;
             partition2++;
         }
@@ -234,8 +240,8 @@ public class Main {
 
 
         for (int i = 0; i <= 4; i++) {
-            log.info("topic 2 partition {} has the following arrival rate {} and lag {}", i, Scale2.topicpartitions2.get(i).getArrivalRate(),
-                    Scale2.topicpartitions2.get(i).getLag());
+            log.info("topic 2 partition {} has the following arrival rate {} and lag {}", i, Scale2p.topicpartitions2.get(i).getArrivalRate(),
+                    Scale2p.topicpartitions2.get(i).getLag());
         }
         log.info("******************");
 
@@ -249,15 +255,15 @@ public class Main {
 
 
         if (Duration.between(Scale.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
-            Scale.scaleAsPerBinPack(Scale.size);
+            Scalep.scaleAsPerBinPack(Scalep.size);
         }
 
         if (Duration.between(Scale2.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
-            Scale2.scaleAsPerBinPack(Scale2.size);
+            Scale2p.scaleAsPerBinPack(Scale2p.size);
         }
 
         if (Duration.between(Scale5.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
-            Scale5.scaleAsPerBinPack(Scale5.size);
+            Scale5p.scaleAsPerBinPack(Scale5p.size);
         }
 
 
@@ -526,7 +532,7 @@ public class Main {
                 e.printStackTrace();
             }
 
-            Scale5.topicpartitions5.get(partition2).setArrivalRate(partitionArrivalRate2);
+            Scale5p.topicpartitions5.get(partition2).setArrivalRate(partitionArrivalRate2);
 
             totalarrivalstopic2 += partitionArrivalRate2;
             partition2++;
@@ -545,7 +551,7 @@ public class Main {
                 e.printStackTrace();
             }
 
-            Scale5.topicpartitions5.get(partition2).setLag(partitionLag2);
+            Scale5p.topicpartitions5.get(partition2).setLag(partitionLag2);
             totallag2 += partitionLag2;
             partition2++;
         }
@@ -555,18 +561,15 @@ public class Main {
 
 
         for (int i = 0; i <= 4; i++) {
-            log.info("topic 5 partition {} has the following arrival rate {} and lag {}", i, Scale5.topicpartitions5.get(i).getArrivalRate(),
-                    Scale5.topicpartitions5.get(i).getLag());
+            log.info("topic 5 partition {} has the following arrival rate {} and lag {}", i, Scale5p.topicpartitions5.get(i).getArrivalRate(),
+                    Scale5p.topicpartitions5.get(i).getLag());
         }
 
 
         log.info("******************");
 
 
-
     }
-
-
 
 
 
