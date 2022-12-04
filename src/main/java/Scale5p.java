@@ -9,8 +9,6 @@ import java.util.*;
 
 public class Scale5p {
 
-
-
     static ArrayList<Partition> topicpartitions5 = new ArrayList<>();
     static ArrayList<Partition> topicpartitions5avg = new ArrayList<>();
 
