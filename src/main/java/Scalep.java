@@ -28,11 +28,7 @@ public class Scalep {
         log.info("Currently we have this number of consumers group1 {}", currentsize);
         int neededsize = binPackAndScale();
         //int needsize2 = shallwescaletheother(neededsize);
-
-
-
         log.info("We currently need the following consumers for group1 (as per the bin pack) {}", neededsize);
-
         int replicasForscale = neededsize - currentsize;
         // but is the assignmenet the same
         if (replicasForscale > 0 ) {
@@ -40,31 +36,28 @@ public class Scalep {
             log.info("We have to upscale by group1 {}", replicasForscale);
             size= neededsize;
 
-
             try (final KubernetesClient k8s = new DefaultKubernetesClient()) {
                 k8s.apps().deployments().inNamespace("default").withName("cons1persec").scale(neededsize);
                 //scaling CG2 as well
-
                 log.info("I have Upscaled group1 you should have {}", neededsize);
                 lastUpScaleDecision = Instant.now();
             }
         }
         else {
             int neededsized = binPackAndScaled();
-
-
             int replicasForscaled =  currentsize -neededsized;
-            if(replicasForscaled>0) {
-                size= neededsize;
 
+            if(replicasForscaled>0) {
+
+                log.info("We have to downscale  group1 by {}", replicasForscaled);
+
+                size= neededsized;
                 try (final KubernetesClient k8s = new DefaultKubernetesClient()) {
                     k8s.apps().deployments().inNamespace("default").withName("cons1persec").scale(neededsized);
-                    log.info("I have downscaled group1 you should have {}", neededsize);
+                    log.info("I have downscaled group1 you should have {}", neededsized);
                 }
                 lastDownScaleDecision = Instant.now();
                 lastUpScaleDecision = Instant.now();
-
-
             }
         }
     }
@@ -110,7 +103,7 @@ public class Scalep {
                 //TODO externalize these choices on the inout to the FFD bin pack
                 // TODO  hey stupid use instatenous lag instead of average lag.
                 // TODO average lag is a decision on past values especially for long DI.
-                if (/*cons.getRemainingLagCapacity() >=  partition.getLag()  &&*/
+                if (cons.getRemainingLagCapacity() >=  partition.getLag()  &&
                         cons.getRemainingArrivalCapacity() >= partition.getArrivalRate()) {
                     cons.assignPartition(partition);
                     // we are done with this partition, go to next
@@ -130,7 +123,7 @@ public class Scalep {
                 consumer = null;
             }
         }
-        log.info(" The BP scaler recommended {}", consumers.size());
+        log.info(" The BP up scaler recommended {}", consumers.size());
         return consumers.size();
     }
 
@@ -177,7 +170,7 @@ public class Scalep {
                 //TODO externalize these choices on the inout to the FFD bin pack
                 // TODO  hey stupid use instatenous lag instead of average lag.
                 // TODO average lag is a decision on past values especially for long DI.
-                if (/*cons.getRemainingLagCapacity() >=  partition.getLag()  &&*/
+                if (cons.getRemainingLagCapacity() >=  partition.getLag()  &&
                         cons.getRemainingArrivalCapacity() >= partition.getArrivalRate()) {
                     cons.assignPartition(partition);
                     // we are done with this partition, go to next
@@ -197,7 +190,7 @@ public class Scalep {
                 consumer = null;
             }
         }
-        log.info(" The BP scaler recommended {}", consumers.size());
+        log.info(" The BP down scaler recommended {}", consumers.size());
         // copy consumers and partitions for fair assignment
         return consumers.size();
     }

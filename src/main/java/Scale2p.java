@@ -18,37 +18,23 @@ public class Scale2p {
     static double dynamicAverageMaxConsumptionRate = 0.0;
     static double wsla = 5.0;
     static List<Consumer> assignment = new ArrayList<>();
-
-
     private static final Logger log = LogManager.getLogger(Scale2p.class);
-
-
-
-
-
-
 
     public static void scaleAsPerBinPack(int currentsize) {
         log.info("Currently we have this number of consumers group2 {}", currentsize);
         int neededsize = binPackAndScale();
         //int needsize2 = shallwescaletheother(neededsize);
-
-
-
         log.info("We currently need the following consumers for group2 (as per the bin pack) {}", neededsize);
-
         int replicasForscale = neededsize - currentsize;
         // but is the assignmenet the same
         if (replicasForscale > 0 ) {
             //TODO IF and Else IF can be in the same logic
-            log.info("We have to upscale by group1 {}", replicasForscale);
+            log.info("We have to upscale by group2 {}", replicasForscale);
             size= neededsize;
-
 
             try (final KubernetesClient k8s = new DefaultKubernetesClient()) {
                 k8s.apps().deployments().inNamespace("default").withName("cons1persec2").scale(neededsize);
                 //scaling CG2 as well
-
                 log.info("I have Upscaled group2 you should have {}", neededsize);
                 lastUpScaleDecision = Instant.now();
             }
@@ -56,19 +42,19 @@ public class Scale2p {
         else {
             int neededsized = binPackAndScaled();
 
-
             int replicasForscaled =  currentsize -neededsized;
-            if(replicasForscaled>0) {
-                size= neededsize;
 
+
+            if(replicasForscaled>0) {
+                log.info("We have to downscale  group2 by {}", replicasForscaled);
+
+                size= neededsized;
                 try (final KubernetesClient k8s = new DefaultKubernetesClient()) {
                     k8s.apps().deployments().inNamespace("default").withName("cons1persec2").scale(neededsized);
-                    log.info("I have downscaled group2 you should have {}", neededsize);
+                    log.info("I have downscaled group2 you should have {}", neededsized);
                 }
                 lastDownScaleDecision = Instant.now();
                 lastUpScaleDecision = Instant.now();
-
-
             }
         }
     }
@@ -114,7 +100,7 @@ public class Scale2p {
                 //TODO externalize these choices on the inout to the FFD bin pack
                 // TODO  hey stupid use instatenous lag instead of average lag.
                 // TODO average lag is a decision on past values especially for long DI.
-                if (/*cons.getRemainingLagCapacity() >=  partition.getLag()  &&*/
+                if (cons.getRemainingLagCapacity() >=  partition.getLag()  &&
                         cons.getRemainingArrivalCapacity() >= partition.getArrivalRate()) {
                     cons.assignPartition(partition);
                     // we are done with this partition, go to next
@@ -134,7 +120,7 @@ public class Scale2p {
                 consumer = null;
             }
         }
-        log.info(" The BP scaler recommended {}", consumers.size());
+        log.info(" The BP up scaler recommended for cg2 {}", consumers.size());
         return consumers.size();
     }
 
@@ -181,7 +167,7 @@ public class Scale2p {
                 //TODO externalize these choices on the inout to the FFD bin pack
                 // TODO  hey stupid use instatenous lag instead of average lag.
                 // TODO average lag is a decision on past values especially for long DI.
-                if (/*cons.getRemainingLagCapacity() >=  partition.getLag()  &&*/
+                if (cons.getRemainingLagCapacity() >=  partition.getLag()  &&
                         cons.getRemainingArrivalCapacity() >= partition.getArrivalRate()) {
                     cons.assignPartition(partition);
                     // we are done with this partition, go to next
@@ -201,7 +187,7 @@ public class Scale2p {
                 consumer = null;
             }
         }
-        log.info(" The BP scaler recommended {}", consumers.size());
+        log.info(" The BP down scaler recommended for cg2 {}", consumers.size());
         // copy consumers and partitions for fair assignment
         return consumers.size();
     }
