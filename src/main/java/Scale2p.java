@@ -66,7 +66,7 @@ public class Scale2p {
         List<Consumer> consumers = new ArrayList<>();
         int consumerCount = 0;
         List<Partition> parts = new ArrayList<>(topicpartitions2);
-        dynamicAverageMaxConsumptionRate = 225 * 0.9;//450.0;//230.0;//450.0;//95.0; //450.0; //240.0;
+        dynamicAverageMaxConsumptionRate = 225 /** 0.8*/;//450.0;//230.0;//450.0;//95.0; //450.0; //240.0;
 
         long maxLagCapacity;
         maxLagCapacity = (long) (dynamicAverageMaxConsumptionRate * wsla);
@@ -133,7 +133,7 @@ public class Scale2p {
         List<Consumer> consumers = new ArrayList<>();
         int consumerCount = 0;
         List<Partition> parts = new ArrayList<>(topicpartitions2);
-        dynamicAverageMaxConsumptionRate = 225.0*0.7;//450.0;//230.0;//450.0;//95.0; //450.0; //240.0;
+        dynamicAverageMaxConsumptionRate = 225.0*0.6;//450.0;//230.0;//450.0;//95.0; //450.0; //240.0;
 
         long maxLagCapacity;
         maxLagCapacity = (long) (dynamicAverageMaxConsumptionRate * wsla);
