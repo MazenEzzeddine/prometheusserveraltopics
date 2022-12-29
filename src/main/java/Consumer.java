@@ -13,7 +13,6 @@ public class Consumer {
         this.lagCapacity = lagCapacity;
         this.arrivalCapacity = arrivalCapacity;
         this.id = id;
-
         this.remainingLagCapacity = lagCapacity;
         this.remainingArrivalCapacity = arrivalCapacity;
         assignedPartitions = new ArrayList<>();
