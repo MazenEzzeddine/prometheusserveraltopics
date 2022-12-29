@@ -40,8 +40,8 @@ public class Main {
         Thread.sleep(30000);
         while (true) {
             log.info("Querying Prometheus");
-            Main.QueryingPrometheus();
             QueryRate.queryConsumerGroup();
+            Main.QueryingPrometheus();
             log.info("Sleeping for 10 seconds");
             log.info("========================================");
             Thread.sleep(10000);
