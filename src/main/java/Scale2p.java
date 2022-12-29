@@ -188,6 +188,9 @@ public class Scale2p {
             }
         }
         log.info(" The BP down scaler recommended for cg2 {}", consumers.size());
+
+        log.info("===================================");
+
         // copy consumers and partitions for fair assignment
         return consumers.size();
     }

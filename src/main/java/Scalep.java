@@ -192,6 +192,8 @@ public class Scalep {
         }
         log.info(" The BP down scaler recommended {}", consumers.size());
         // copy consumers and partitions for fair assignment
+
+        log.info("===================================");
         return consumers.size();
     }
 

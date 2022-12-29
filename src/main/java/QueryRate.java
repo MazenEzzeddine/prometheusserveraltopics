@@ -40,6 +40,8 @@ public class QueryRate {
          callForConsumptionRate(memberDescription.host());
         }
 
+        log.info("==================================");
+
 
     }
 

@@ -192,6 +192,8 @@ public class Scale5p {
         }
         log.info(" The BP down scaler recommended for cg 5 {}", consumers.size());
         // copy consumers and partitions for fair assignment
+        log.info("===================================");
+
         return consumers.size();
     }
 
