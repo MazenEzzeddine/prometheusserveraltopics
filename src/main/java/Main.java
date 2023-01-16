@@ -35,14 +35,16 @@ public class Main {
 
 
         }
+/*        log.info("Warming for 3 minutes seconds.");
+        Thread.sleep(180000);*/
         log.info("Warming for 30 seconds.");
         Thread.sleep(30000);
         while (true) {
             log.info("Querying Prometheus");
             Main.QueryingPrometheus();
-            log.info("Sleeping for 10 seconds");
+            log.info("Sleeping for 3 seconds");
             log.info("========================================");
-            Thread.sleep(10000);
+            Thread.sleep(5000);
         }
     }
 
@@ -53,12 +55,11 @@ public class Main {
         ///////////////////////////////////////////////////////////////////////////////////////////////
 
         ArrivalRates.arrivalRateTopic1();
-        ArrivalRates.arrivalRateTopic2();
+       ArrivalRates.arrivalRateTopic2();
         ArrivalRates.arrivalRateTopic3();
-        ArrivalRates.arrivalRateTopic4();
+         //ArrivalRates.arrivalRateTopic4();
         ArrivalRates.arrivalRateTopic5();
         //arrivalRateTopic5Avg();
-
 
         if (Duration.between(Scale.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
             //QueryRate.queryConsumerGroup();
@@ -71,7 +72,7 @@ public class Main {
         }
 
         if (Duration.between(Scale5.lastUpScaleDecision, Instant.now()).getSeconds() > 15) {
-            QueryRate.queryConsumerGroup();
+           // QueryRate.queryConsumerGroup();
             Scale5p.scaleAsPerBinPack(Scale5p.size);
         }
     }

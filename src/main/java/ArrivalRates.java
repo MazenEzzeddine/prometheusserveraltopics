@@ -163,7 +163,11 @@ public class ArrivalRates {
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
-            Scalep.topicpartitions1.get(partition).setArrivalRate(partitionArrivalRate);
+          Scalep.topicpartitions1.get(partition).setArrivalRate(partitionArrivalRate);
+             /* Scale2p.topicpartitions2.get(partition).setArrivalRate(partitionArrivalRate*0.8);
+            Scale5p.topicpartitions5.get(partition).setArrivalRate(partitionArrivalRate*0.6*0.8);
+*/
+
             totalarrivalstopic1 += partitionArrivalRate;
             partition++;
         }
@@ -178,6 +182,9 @@ public class ArrivalRates {
                 e.printStackTrace();
             }
             Scalep.topicpartitions1.get(partition).setLag(partitionLag);
+             /* Scale2p.topicpartitions2.get(partition).setLag(0);
+            Scale5p.topicpartitions5.get(partition).setLag(0);*/
+
             totallag += partitionLag;
             partition++;
         }
@@ -272,7 +279,7 @@ public class ArrivalRates {
             partition2++;
         }
         log.info("totalLag for topic 4 {}", totallag2);
-     /*   for (int i = 0; i <= 4; i++) {
+    /*    for (int i = 0; i <= 4; i++) {
             log.info("topic 4 partition {} has the following arrival rate {} and lag {}", i, topicpartitions4.get(i).getArrivalRate(),
                     topicpartitions4.get(i).getLag());
         }*/
